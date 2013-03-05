@@ -1,4 +1,4 @@
-local CiderRunMode = {};CiderRunMode.runmode = true;CiderRunMode.sdk = "Corona";CiderRunMode.assertImage = true;CiderRunMode.userdir = "C:/Users/Mike and Leia Kidd/AppData/Roaming/.luaglider/dev";local CORONA_SOCKET_PORT=51248;local SOCKET_PORT=51249;local GLIDER_MAIN_FOLDER= "C:/Users/Mike and Leia Kidd/Documents/NetBeansProjects/Kwizzer";local useNativePrint= false;
+local CiderRunMode = {};CiderRunMode.runmode = true;CiderRunMode.sdk = "Corona";CiderRunMode.assertImage = true;CiderRunMode.userdir = "C:/Users/michael.kidd/AppData/Roaming/.luaglider/dev";local CORONA_SOCKET_PORT=51248;local SOCKET_PORT=51249;local GLIDER_MAIN_FOLDER= "C:/Users/michael.kidd/Documents/NetBeansProjects/Kwizzer";local useNativePrint= false;
 --v1.70
 -----------------------------------------------------------------------------------------
 --

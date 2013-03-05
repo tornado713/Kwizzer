@@ -1,4 +1,4 @@
-require "CiderDebugger";
+
 local storyboard = require "storyboard"
 local widget = require "widget"
 -----------------------------------------------------------------------------------------

@@ -6,11 +6,11 @@ require("sqlite3")
 local database = nil
 -- database query strings
 local data_SelectAllFromGrade = [[ Select * from grade; ]]
-local data_SelectAllFromStudent = [[ 
+local data_SelectAllStudentsAndGrades = [[ 
     Select student.id as studentid, student.name as name, grade.name as grade 
     from student, grade 
     where student.gradeid == grade.id; 
-]]
+    ]]
 
 function checkDataBaseState()
     if (database == nil or database.isopen(database) == false) then
@@ -19,16 +19,26 @@ function checkDataBaseState()
     end
 end
 
-function getSingleStudentName()
+function getSingleStudent(id)
+    local query;
+    
+    if (id == nil) then
+      query = 'SELECT * FROM student LIMIT 1'
+    else
+      query = [[ Select student.id as studentid, student.name as name, grade.name as grade
+        from student, grade 
+        where student.gradeid == grade.id
+        AND student.id = ]] .. id .. [[ ; ]]
+    end
+    
     checkDataBaseState{}
 
-    local name = ""
+    local student = nil
     
-    for a in database:nrows('SELECT name FROM student LIMIT 1') do
-        name = a.name
-        print(a.name)
+    for a in database:nrows(query) do
+        student = a
     end
-    return name
+    return student
 end
 
 function initialize()
@@ -74,7 +84,5 @@ function initialize()
         
         insert into student values(null, 3, 'Ava', 1);
         insert into student values(null, 1, 'Alex', 1);
-        
-        insert into student
     ]])
 end

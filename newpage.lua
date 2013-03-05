@@ -1,6 +1,6 @@
 ----------------------------------------------------------------------------------
 --
--- menu.lua
+-- newpage.lua
 --
 ----------------------------------------------------------------------------------
 
@@ -23,20 +23,6 @@ local scene = storyboard.newScene()
 -- BEGINNING OF YOUR IMPLEMENTATION
 ---------------------------------------------------------------------------------
 
-local background, studentButton, exitApp
-
-local function onExitRelease(event)
-    -- this will not work in the simulator, but works fine on the device
-    native.requestExit()
-end
-
-local function onStudentRelease(event)
-    --print(event.target.grade)
-    --print(event.target.id)
-    appState.studentid = event.target.id
-    storyboard.gotoScene("newpage")
-end
-
 -- Called when the scene's view does not exist:
 function scene:createScene( event )
 	local screenGroup = self.view
@@ -48,41 +34,6 @@ function scene:createScene( event )
 	
 	-----------------------------------------------------------------------------
 	
---	background = display.newImage("the-abcs.png")
---	screenGroup:insert( background )
-	
-	text = display.newText(screenGroup, "Kwizzer", display.contentWidth/2 - 50, 100 , nil, 28)
-	screenGroup:insert(text)
-        
-  local student = db.getSingleStudent(nil)
-        
-	studentButton = widget.newButton{
-            id = student.id,
-            label = student.name,
-            labelColor = { default={0}, over={0} },
-            font = native.systemFontBold,
-            xOffset=2, yOffset=-1,
-            -- default = "load-default.png",
-            -- over = "load-over.png",
-            width=50, height=25,
-            left=display.contentWidth/2 - 25, top=200
-        }
-        
-        studentButton.grade = student.gradeid
-        
-	exitGame = widget.newButton{
-            label = "Exit",
-            labelColor = { default={0}, over={0} },
-            font = native.systemFontBold,
-            xOffset=2, yOffset=-1,
-            -- default = "load-default.png",
-            -- over = "load-over.png",
-            width=50, height=25,
-            left=display.contentWidth/2 - 25, top=300
-        }
-        
-        screenGroup:insert(studentButton)
-        screenGroup:insert(exitGame)
 	print( "\n2: createScene event" )
 end
 
@@ -97,9 +48,9 @@ function scene:enterScene( event )
     --	INSERT code here (e.g. start timers, load audio, start listeners, etc.)
 
     --
-
-    studentButton.onRelease = onStudentRelease
-    exitGame.onRelease = onExitRelease
+    
+    local student = db.getSingleStudent(appState.studentid)
+    display.newText(student.grade, 10, 10, nil, 28)
 end
 
 
@@ -112,12 +63,6 @@ function scene:exitScene( event )
     --	INSERT code here (e.g. stop timers, remove listeners, unload sounds, etc.)
 
     -----------------------------------------------------------------------------
-
-    db = nil
-    studentButton = nil
-    background = nil
-    exitGame = nil
-    screenGroup = nil
 end
 
 
@@ -130,11 +75,6 @@ function scene:destroyScene( event )
     --	INSERT code here (e.g. remove listeners, widgets, save state, etc.)
 
     -----------------------------------------------------------------------------
-    
-    db = nil
-    studentButton = nil
-    background = nil
-    exitGame = nil
 end
 
 ---------------------------------------------------------------------------------
