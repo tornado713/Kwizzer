@@ -19,16 +19,16 @@ function checkDataBaseState()
     end
 end
 
-function printStuff()
+function getSingleStudentName()
     checkDataBaseState{}
+
+    local name = ""
+    
     for a in database:nrows('SELECT name FROM student LIMIT 1') do
+        name = a.name
         print(a.name)
     end
---    for row in database:nrows(data_SelectAllFromStudent) do
---        local t = display.newText(row.name .. " -> " .. row.grade, 20, 30 * row.studentid, null, 16)
---        t:setTextColor(255,0,255)
---    end
-    database:close()
+    return name
 end
 
 function initialize()
@@ -74,5 +74,7 @@ function initialize()
         
         insert into student values(null, 3, 'Ava', 1);
         insert into student values(null, 1, 'Alex', 1);
+        
+        insert into student
     ]])
 end

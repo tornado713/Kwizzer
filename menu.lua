@@ -5,6 +5,9 @@
 ----------------------------------------------------------------------------------
 
 local storyboard = require( "storyboard" )
+local widget = require("widget")
+local db = require("db")
+local appState = require("appstate")
 local scene = storyboard.newScene()
 
 ----------------------------------------------------------------------------------
@@ -20,19 +23,15 @@ local scene = storyboard.newScene()
 -- BEGINNING OF YOUR IMPLEMENTATION
 ---------------------------------------------------------------------------------
 
-local background, newGame, loadGame, exitGame
+local background, studentButton, exitApp
 
-local function onNewGameTouch( self, event )
-	if event.phase == "began" then
-		storyboard.gotoScene("backstory")
-		return true
-	end
+local function onExitRelease(event)
+    -- this will not work in the simulator, but works fine on the device
+    native.requestExit() 
 end
 
-local function onExitTouch( self, event )
-	if event.phase == "began" then
-            native.requestExit() 
-	end
+local function onStudentRelease(event)
+    print(event.target.id)
 end
 
 -- Called when the scene's view does not exist:
@@ -46,22 +45,36 @@ function scene:createScene( event )
 	
 	-----------------------------------------------------------------------------
 	
-	background = display.newImage("Images/blackbackground.png")
-	screenGroup:insert( background )
+--	background = display.newImage("the-abcs.png")
+--	screenGroup:insert( background )
 	
-	text = display.newText("SpaceBallz", 100, 75, nil, 20)
+	text = display.newText(screenGroup, "Kwizzer", display.contentWidth/2 - 50, 100 , nil, 28)
 	screenGroup:insert(text)
-	
-	newGame = display.newImage("Images/newgame.png", 20, 200)
-	screenGroup:insert(newGame)
-	newGame.touch = onNewGameTouch 
-	
-	loadGame = display.newText("Load Game (not ready)", 70, 300, nil, 20)
-	screenGroup:insert(loadGame)
-	
-	exitGame = display.newText("Exit", 130, 400, nil, 20)
-	screenGroup:insert(exitGame)
-	exitGame.touch = onExitTouch
+        
+        local studentName = db:getSingleStudentName{}
+        
+	studentButton = widget.newButton{
+            id = 1,
+            label = studentName,
+            labelColor = { default={0}, over={0} },
+            font = native.systemFontBold,
+            xOffset=2, yOffset=-1,
+            -- default = "load-default.png",
+            -- over = "load-over.png",
+            width=50, height=25,
+            left=display.contentWidth/2 - 25, top=200
+        }
+
+	exitGame = widget.newButton{
+            label = "Exit",
+            labelColor = { default={0}, over={0} },
+            font = native.systemFontBold,
+            xOffset=2, yOffset=-1,
+            -- default = "load-default.png",
+            -- over = "load-over.png",
+            width=50, height=25,
+            left=display.contentWidth/2 - 25, top=300
+        }
 	
 	print( "\n2: createScene event" )
 end
@@ -69,46 +82,51 @@ end
 
 -- Called immediately after scene has moved onscreen:
 function scene:enterScene( event )
-	local group = self.view
-	
-	local gameState = require("gamestate")
-	-----------------------------------------------------------------------------
-		
-	--	INSERT code here (e.g. start timers, load audio, start listeners, etc.)
-	
-	-----------------------------------------------------------------------------
-	
-	newGame:addEventListener( "touch", newGame )
-	exitGame:addEventListener( "touch", exitGame )
-		
-	storyboard.purgeScene("gameover")
+    local group = self.view
+
+    --local gameState = require("gamestate")
+    -----------------------------------------------------------------------------
+
+    --	INSERT code here (e.g. start timers, load audio, start listeners, etc.)
+
+    --
+
+    studentButton.onRelease = onStudentRelease
+    exitGame.onRelease = onExitRelease
 end
 
 
 -- Called when scene is about to move offscreen:
 function scene:exitScene( event )
-	local group = self.view
-	
-	-----------------------------------------------------------------------------
-	
-	--	INSERT code here (e.g. stop timers, remove listeners, unload sounds, etc.)
-	
-	-----------------------------------------------------------------------------
-	
-	background:removeEventListener( "touch", background )
+    local group = self.view
+
+    -----------------------------------------------------------------------------
+
+    --	INSERT code here (e.g. stop timers, remove listeners, unload sounds, etc.)
+
+    -----------------------------------------------------------------------------
+
+    db = nil
+    studentButton = nil
+    background = nil
+    exitGame = nil
 end
 
 
 -- Called prior to the removal of scene's "view" (display group)
 function scene:destroyScene( event )
-	local group = self.view
-	
-	-----------------------------------------------------------------------------
-	
-	--	INSERT code here (e.g. remove listeners, widgets, save state, etc.)
-	
-	-----------------------------------------------------------------------------
-	
+    local group = self.view
+
+    -----------------------------------------------------------------------------
+
+    --	INSERT code here (e.g. remove listeners, widgets, save state, etc.)
+
+    -----------------------------------------------------------------------------
+    
+    db = nil
+    studentButton = nil
+    background = nil
+    exitGame = nil
 end
 
 ---------------------------------------------------------------------------------
