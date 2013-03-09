@@ -33,7 +33,7 @@ end
 local function onStudentRelease(event)
     --print(event.target.grade)
     --print(event.target.id)
-    appState.studentid = event.target.id
+    appState.studentid = event.target.studentid
     storyboard.gotoScene("newpage")
 end
 
@@ -54,22 +54,27 @@ function scene:createScene( event )
 	text = display.newText(screenGroup, "Kwizzer", display.contentWidth/2 - 50, 100 , nil, 28)
 	screenGroup:insert(text)
         
-  local student = db.getSingleStudent(nil)
+  local i = 0
+  for student in db.getAllStudents() do
+    local studentButton
+    studentButton = widget.newButton{
+              label = student.name,
+              labelColor = { default={0}, over={0} },
+              font = native.systemFontBold,
+              xOffset=2, yOffset=-1,
+              -- default = "load-default.png",
+              -- over = "load-over.png",
+              width=50, height=25,
+              left=display.contentWidth/2 - 25, top=200 + (i * 30)
+          }
         
-	studentButton = widget.newButton{
-            id = student.id,
-            label = student.name,
-            labelColor = { default={0}, over={0} },
-            font = native.systemFontBold,
-            xOffset=2, yOffset=-1,
-            -- default = "load-default.png",
-            -- over = "load-over.png",
-            width=50, height=25,
-            left=display.contentWidth/2 - 25, top=200
-        }
-        
-        studentButton.grade = student.gradeid
-        
+    studentButton.onRelease = onStudentRelease
+    studentButton.studentid = student.id
+    studentButton.grade = student.grade
+    screenGroup:insert(studentButton)
+    i = i + 1
+  end
+  
 	exitGame = widget.newButton{
             label = "Exit",
             labelColor = { default={0}, over={0} },
@@ -81,8 +86,8 @@ function scene:createScene( event )
             left=display.contentWidth/2 - 25, top=300
         }
         
-        screenGroup:insert(studentButton)
-        screenGroup:insert(exitGame)
+  screenGroup:insert(exitGame)
+  
 	print( "\n2: createScene event" )
 end
 
@@ -98,7 +103,7 @@ function scene:enterScene( event )
 
     --
 
-    studentButton.onRelease = onStudentRelease
+    --studentButton.onRelease = onStudentRelease
     exitGame.onRelease = onExitRelease
 end
 
@@ -114,7 +119,6 @@ function scene:exitScene( event )
     -----------------------------------------------------------------------------
 
     db = nil
-    studentButton = nil
     background = nil
     exitGame = nil
     screenGroup = nil

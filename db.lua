@@ -7,7 +7,7 @@ local database = nil
 -- database query strings
 local data_SelectAllFromGrade = [[ Select * from grade; ]]
 local data_SelectAllStudentsAndGrades = [[ 
-    Select student.id as studentid, student.name as name, grade.name as grade 
+    Select student.id as id, student.name as name, grade.name as grade 
     from student, grade 
     where student.gradeid == grade.id; 
     ]]
@@ -19,13 +19,19 @@ function checkDataBaseState()
     end
 end
 
+function getAllStudents(id)
+    checkDataBaseState{}
+
+    return database:nrows(data_SelectAllStudentsAndGrades)
+end
+
 function getSingleStudent(id)
     local query;
     
     if (id == nil) then
       query = 'SELECT * FROM student LIMIT 1'
     else
-      query = [[ Select student.id as studentid, student.name as name, grade.name as grade
+      query = [[ Select student.id as id, student.name as name, grade.name as grade
         from student, grade 
         where student.gradeid == grade.id
         AND student.id = ]] .. id .. [[ ; ]]
